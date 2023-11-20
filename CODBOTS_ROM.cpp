@@ -1,185 +1,299 @@
-
 #include "CODBOTS_ROM.h"
 
 CODBOTS_ROM::CODBOTS_ROM() {}
 
-
-void CODBOTS_ROM::begin(int dataLen,int eepromSize) {
+/**
+ * @brief Initializes the CODBOTS_ROM object.
+ *
+ * @param dataLen Size of datasets.
+ * @param eepromSize ROM memory size in bytes.
+ */
+void CODBOTS_ROM::begin(int dataLen, int eepromSize)
+{
   _eepromSize = eepromSize;
   _dataLen = dataLen;
   EEPROM.begin(_eepromSize);
-  if(!checkSignature()){
+
+  // Check if the ROM signature matches, clear memory if not.
+  if (!checkSignature())
+  {
     clearMemory();
   }
 }
-void CODBOTS_ROM::copy(int dataLen,int eepromSize) {
+
+/**
+ * @brief Copies ROM settings.
+ *
+ * @param dataLen Size of datasets.
+ * @param eepromSize ROM memory size in bytes.
+ */
+void CODBOTS_ROM::copy(int dataLen, int eepromSize)
+{
   _eepromSize = eepromSize;
   _dataLen = dataLen;
-  if(!checkSignature()){
+
+  // Check if the ROM signature matches, clear memory if not.
+  if (!checkSignature())
+  {
     clearMemory();
   }
 }
 
-void CODBOTS_ROM::clearMemory(){
-  for (int n = 0; n < 4;n++){
+/**
+ * @brief Clears the entire ROM memory.
+ */
+void CODBOTS_ROM::clearMemory()
+{
+  // Write the library signature to the first 4 bytes.
+  for (int n = 0; n < 4; n++)
+  {
     EEPROM.write(n, lib_signature[n]);
   }
-  Serial.println("CODBOTS_ROM:Clear memory");
 
-  for (int n = 4; n < _eepromSize;n++){
+  Serial.println("CODBOTS_ROM: Clear memory");
+
+  // Set the rest of the EEPROM to 0.
+  for (int n = 4; n < _eepromSize; n++)
+  {
     EEPROM.write(n, 0);
   }
-  Serial.println("CODBOTS_ROM:Memory Cleared");
-  EEPROM.commit();
-}
-void CODBOTS_ROM::clearMemory(int start,int length){
-  for (int n = start; n < start+length;n++){
-    EEPROM.write(n, 0);
-  }
+
+  Serial.println("CODBOTS_ROM: Memory Cleared");
   EEPROM.commit();
 }
 
-void CODBOTS_ROM::print(int start,int end){
-  for (int n = start; n < end;n++){
+/**
+ * @brief Clears a specified portion of the ROM memory.
+ *
+ * @param start Starting address.
+ * @param length Length of the memory to clear.
+ */
+void CODBOTS_ROM::clearMemory(int start, int length)
+{
+  for (int n = start; n < start + length; n++)
+  {
+    EEPROM.write(n, 0);
+  }
+  EEPROM.commit();
+}
+
+/**
+ * @brief Prints values from a specified range in the ROM memory to Serial.
+ *
+ * @param start Starting address.
+ * @param end Ending address.
+ */
+void CODBOTS_ROM::print(int start, int end)
+{
+  for (int n = start; n < end; n++)
+  {
     Serial.println(String(n) + "(" + String(EEPROM.read(n)) + ")");
   }
 }
 
-bool CODBOTS_ROM::checkSignature(){
+/**
+ * @brief Checks if the ROM signature matches.
+ *
+ * @return true if the signature matches, false otherwise.
+ */
+bool CODBOTS_ROM::checkSignature()
+{
   lib_signature[3] = _dataLen;
-  for (int n = 0; n < 4;n++){
-    if(EEPROM.read(n)!=(byte)lib_signature[n]){
-      Serial.println("CODBOTS_ROM:Signature unmached!");
+
+  // Check if each byte of the signature matches.
+  for (int n = 0; n < 4; n++)
+  {
+    if (EEPROM.read(n) != (byte)lib_signature[n])
+    {
+      Serial.println("CODBOTS_ROM: Signature unmatched!");
       return false;
     }
   }
   return true;
 }
 
-void CODBOTS_ROM::createSlot(int slotindex, int length){
-  if(length>255){
-    Serial.println("SLOTINDEX:" + String(slotindex) + " must less than 255.");
+/**
+ * @brief Creates a slot in the ROM memory with specified length.
+ *
+ * @param slotindex Index of the slot.
+ * @param length Length of the slot.
+ */
+void CODBOTS_ROM::createSlot(int slotindex, int length)
+{
+  if (length > 255)
+  {
+    Serial.println("SLOTINDEX:" + String(slotindex) + " must be less than 255.");
     return;
   }
-  if(slotindex>_dataLen){
-    Serial.println("SLOTINDEX:" + String(slotindex) + " must less _dataLen.");
+  if (slotindex > _dataLen)
+  {
+    Serial.println("SLOTINDEX:" + String(slotindex) + " must be less than _dataLen.");
     return;
   }
- 
-  if(getSlotLength(slotindex)!=(byte)length){
+
+  // Update the slot length in the ROM memory.
+  if (getSlotLength(slotindex) != (byte)length)
+  {
     EEPROM.write(getSlotLenIndex(slotindex), (byte)length);
-    clearMemory(getSlotStartIndex(slotindex),length);
+    clearMemory(getSlotStartIndex(slotindex), length);
     EEPROM.commit();
   }
 }
 
-void CODBOTS_ROM::clearSlot(int slotindex){
-  clearMemory(getSlotStartIndex(slotindex),getSlotLength(slotindex));
+/**
+ * @brief Clears the content of a specified slot.
+ *
+ * @param slotindex Index of the slot.
+ */
+void CODBOTS_ROM::clearSlot(int slotindex)
+{
+  clearMemory(getSlotStartIndex(slotindex), getSlotLength(slotindex));
 }
 
-int CODBOTS_ROM::getSlotLenIndex(int slotindex){
+/**
+ * @brief Gets the index in the EEPROM where the length of a slot is stored.
+ *
+ * @param slotindex Index of the slot.
+ * @return Index in EEPROM.
+ */
+int CODBOTS_ROM::getSlotLenIndex(int slotindex)
+{
   return lib_signature_len + slotindex;
 }
 
-int CODBOTS_ROM::getSlotLength(int slotindex){
+/**
+ * @brief Gets the length of a specified slot.
+ *
+ * @param slotindex Index of the slot.
+ * @return Length of the slot.
+ */
+int CODBOTS_ROM::getSlotLength(int slotindex)
+{
   return EEPROM.read(getSlotLenIndex(slotindex));
 }
 
-int CODBOTS_ROM::getSlotStartIndex(int slotindex){
-  int total=lib_signature_len+_dataLen;
-  for (int n = 0; n < slotindex;n++){
+/**
+ * @brief Gets the starting index in EEPROM where a slot begins.
+ *
+ * @param slotindex Index of the slot.
+ * @return Starting index in EEPROM.
+ */
+int CODBOTS_ROM::getSlotStartIndex(int slotindex)
+{
+  int total = lib_signature_len + _dataLen;
+  for (int n = 0; n < slotindex; n++)
+  {
     total += EEPROM.read(getSlotLenIndex(slotindex));
   }
   return total;
 }
 
-void CODBOTS_ROM::writeSlot(String data, int slotindex){
+/**
+ * @brief Writes a String to a specified slot in the ROM memory.
+ *
+ * @param data String to write.
+ * @param slotindex Index of the slot.
+ */
+void CODBOTS_ROM::writeSlot(String data, int slotindex)
+{
   int startindex = getSlotStartIndex(slotindex);
-  for (int i = 0; i < getSlotLength(slotindex); i++) {
-    if (i < data.length()) {
+  for (int i = 0; i < getSlotLength(slotindex); i++)
+  {
+    if (i < data.length())
+    {
       EEPROM.write(startindex + i, data[i]);
-    } else {
-      EEPROM.write(startindex + i, 0);  // Null-terminate the string
+    }
+    else
+    {
+      EEPROM.write(startindex + i, 0); // Null-terminate the string
     }
   }
   EEPROM.commit();
 }
 
-void CODBOTS_ROM::writeSlot(byte data[], int slotindex){
+/**
+ * @brief Writes an array of bytes to a specified slot in the ROM memory.
+ *
+ * @param data Array of bytes to write.
+ * @param slotindex Index of the slot.
+ */
+void CODBOTS_ROM::writeSlot(byte data[], int slotindex)
+{
   int elementCount = 17;
 
   int startindex = getSlotStartIndex(slotindex);
-  for (int i = 0; i < getSlotLength(slotindex); i++) {
-    if (i < elementCount) {
+  for (int i = 0; i < getSlotLength(slotindex); i++)
+  {
+    if (i < elementCount)
+    {
       EEPROM.write(startindex + i, data[i]);
-      //Serial.println(String(startindex + i) + "(" + String(data[i]) + ")");
-    } else {
-      EEPROM.write(startindex + i, 0);  // Null-terminate the string
+    }
+    else
+    {
+      EEPROM.write(startindex + i, 0); // Null-terminate the string
     }
   }
   EEPROM.commit();
 }
 
-bool CODBOTS_ROM::readValues(byte data[],int slotindex) {
-  int startAddress=getSlotStartIndex(slotindex);
-  int endAddress=startAddress+getSlotLength(slotindex);
+/**
+ * @brief Reads values from a specified slot in the ROM memory into an array of bytes.
+ *
+ * @param data Array to store the values.
+ * @param slotindex Index of the slot.
+ * @return true if values are available, false otherwise.
+ */
+bool CODBOTS_ROM::readValues(byte data[], int slotindex)
+{
+  int startAddress = getSlotStartIndex(slotindex);
+  int endAddress = startAddress + getSlotLength(slotindex);
   bool available = false;
   for (int i = startAddress; i < endAddress; i++)
   {
     data[i - startAddress] = EEPROM.read(i);
-    if(data[i - startAddress]!=0){
+    if (data[i - startAddress] != 0)
+    {
       available = true;
     }
-    // Serial.println(String(i) + "(" + String(data[i - startAddress]) + ")");
   }
   return available;
 }
 
-String CODBOTS_ROM::readValues(int slotindex) {
-  int startAddress=getSlotStartIndex(slotindex);
-  int endAddress=startAddress+getSlotLength(slotindex);
+/**
+ * @brief Reads values from a specified slot in the ROM memory as a String.
+ *
+ * @param slotindex Index of the slot.
+ * @return String containing the values.
+ */
+String CODBOTS_ROM::readValues(int slotindex)
+{
+  int startAddress = getSlotStartIndex(slotindex);
+  int endAddress = startAddress + getSlotLength(slotindex);
   String data = "";
- 
-    for (int i = startAddress; i <= endAddress; i++) {
-      byte v = EEPROM.read(i);
-      if(v!=0){
-        data+=(char)EEPROM.read(i);
-      }else{
-        return data;
-      }
+
+  for (int i = startAddress; i <= endAddress; i++)
+  {
+    byte v = EEPROM.read(i);
+    if (v != 0)
+    {
+      data += (char)EEPROM.read(i);
     }
-     return data;
-}
-bool CODBOTS_ROM::isEmpty(int slotindex){
-     byte datset[getSlotLength(slotindex)];
-     return readValues(datset,slotindex);
-}
-
-/*
-void CODBOTS_ROM::write(int address,byte value){
-
-}
-
-void CODBOTS_ROM::write(String data, int address, int maxlen) {
-  for (int i = 0; i < maxlen; i++) {
-    if (i < data.length()) {
-      EEPROM.write(address + i, data[i]);
-    } else {
-      EEPROM.write(address + i, 0);  // Null-terminate the string
+    else
+    {
+      return data;
     }
-  }
-  EEPROM.commit();
-}
-
-String CODBOTS_ROM::read(int address) {
-  String data = "";
-  for (int i = 0; i < _eepromSize; i++) {
-    char c = EEPROM.read(address + i);
-    if (c == 0) {
-      break;  // End of string
-    }
-    data += c;
   }
   return data;
 }
-*/
+
+/**
+ * @brief Checks if a specified slot in the ROM memory is empty.
+ *
+ * @param slotindex Index of the slot.
+ * @return true if the slot is empty, false otherwise.
+ */
+bool CODBOTS_ROM::isEmpty(int slotindex)
+{
+  byte datset[getSlotLength(slotindex)];
+  return readValues(datset, slotindex);
+}
