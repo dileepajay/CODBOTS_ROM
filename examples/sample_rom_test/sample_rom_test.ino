@@ -1,6 +1,6 @@
-#include "CODBOTS_ROM.h"
+#include "ii_ROM.h"
 
-CODBOTS_ROM rom;
+ii_ROM rom;
 
 #define ROM_WIFI_SSID 0
 #define ROM_WIFI_PASSWORD 1

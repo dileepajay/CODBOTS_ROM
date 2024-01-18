@@ -1,4 +1,4 @@
-#include <CODBOTS_ROM.h>
+#include <ii_ROM.h>
 
 #define ROM_WIFI_SSID 0
 #define ROM_WIFI_PASSWORD 1
@@ -12,7 +12,7 @@ then we can identify length of first ROMDATA, 2nd ROM data start address and len
 ex: 64,16,16,64,....
 after 64th address store ROMData data[] values 
 */
-CODBOTS_ROM rom;
+ii_ROM rom;
 
 
 void setup() {

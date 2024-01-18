@@ -1,6 +1,6 @@
-# CODBOTS_ROM Library
+# ii_ROM Library
 
-The CODBOTS_ROM library provides a simple interface for managing ROM (Read-Only Memory) on Arduino devices. It allows you to store and retrieve data in a structured manner, making it useful for storing configuration settings, datasets, and more.
+The ii_ROM library provides a simple interface for managing ROM (Read-Only Memory) on Arduino devices. It allows you to store and retrieve data in a structured manner, making it useful for storing configuration settings, datasets, and more.
 
 ## Features
 
@@ -11,20 +11,20 @@ The CODBOTS_ROM library provides a simple interface for managing ROM (Read-Only 
 ## Installation
 
 1. Clone or download the repository.
-2. Copy the `CODBOTS_ROM` folder into the `libraries` directory in your Arduino sketchbook.
+2. Copy the `ii_ROM` folder into the `libraries` directory in your Arduino sketchbook.
 
 ## Getting Started
 
-To use the CODBOTS_ROM library in your Arduino sketch, include the header file:
+To use the ii_ROM library in your Arduino sketch, include the header file:
 
 ```cpp
-#include "CODBOTS_ROM.h"
+#include "ii_ROM.h"
 ```
 
-Then, create an instance of the `CODBOTS_ROM` class and initialize it:
+Then, create an instance of the `ii_ROM` class and initialize it:
 
 ```cpp
-CODBOTS_ROM rom;
+ii_ROM rom;
 rom.begin(10, 4096); // Specify the size of datasets (10 in this example) and ROM memory size (4096 bytes).
 ```
 

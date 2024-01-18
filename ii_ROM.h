@@ -1,18 +1,18 @@
-#ifndef CODBOTS_ROM_h
-#define CODBOTS_ROM_h
+#ifndef ii_ROM_h
+#define ii_ROM_h
 
 #include <Arduino.h>
 #include <EEPROM.h>
 #include <ROMSLOT.h>
 
-class CODBOTS_ROM
+class ii_ROM
 {
 public:
   int _eepromSize; // rom memory size in bytes default : 4096
   int _dataLen;    // size of datasets example: 10
 
   // Constructor
-  CODBOTS_ROM();
+  ii_ROM();
 
   /**
    * @brief Initializes the ROM library with specified parameters.
