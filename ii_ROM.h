@@ -8,147 +8,68 @@
 class ii_ROM
 {
 public:
-  int _eepromSize; // rom memory size in bytes default : 4096
-  int _dataLen;    // size of datasets example: 10
+  int _eepromSize; // Total size of the EEPROM in bytes (default: 4096 bytes).
+  int _dataLen;    // Length of data sets (e.g., 10 bytes per set).
 
-  // Constructor
+  // Default constructor for ii_ROM class.
   ii_ROM();
 
-  /**
-   * @brief Initializes the ROM library with specified parameters.
-   *
-   * @param dataLen Size of datasets (e.g., number of slots).
-   * @param eepromSize Size of the EEPROM memory in bytes.
-   */
+  // Initialize the ROM object with the number of data slots and the size of accessible ROM data.
   void begin(int dataLen, int eepromSize);
 
-  /**
-   * @brief Copies the specified parameters for internal use.
-   *
-   * @param dataLen Size of datasets.
-   * @param eepromSize Size of the EEPROM memory in bytes.
-   */
-  void copy(int dataLen, int eepromSize);
-
-  /**
-   * @brief Creates a ROM slot at the specified index with a given length.
-   *
-   * @param slotindex Index of the ROM slot.
-   * @param length Length of the ROM slot.
-   */
+  // Create a specific data slot with an identity index (e.g., 0, 1, 2, ...) and its expected data length.
   void createSlot(int slotindex, int length);
 
-  /**
-   * @brief Writes a String to the specified ROM slot.
-   *
-   * @param data String data to be written.
-   * @param slotindex Index of the ROM slot.
-   */
-  void writeSlot(String data, int slotindex);
+  // Get the length of data stored in a specific slot.
+  int getLength(int slotindex);
 
-  /**
-   * @brief Writes a byte array to the specified ROM slot.
-   *
-   * @param data Byte array data to be written.
-   * @param slotindex Index of the ROM slot.
-   */
-  void writeSlot(byte data[], int slotindex);
+  // Write a String to a specific slot.
+  void write(String data, int slotindex);
 
-  /**
-   * @brief Clears the contents of the specified ROM slot.
-   *
-   * @param slotindex Index of the ROM slot to be cleared.
-   */
-  void clearSlot(int slotindex);
+  // Write a byte array to a specific slot.
+  // Ensure that the length of the data array matches the length of the slot.
+  void write(byte data[], int datalength, int slotindex);
 
-  /**
-   * @brief Reads data from EEPROM at the specified address.
-   *
-   * @param address EEPROM memory address.
-   * @return String containing the read data.
-   */
-  String read(int address);
+  // WARNING: Critical function - Clears all data in the ROM.
+  void clear();
 
-  /**
-   * @brief Checks if the EEPROM contains the library signature.
-   *
-   * @return True if the signature is present, false otherwise.
-   */
-  bool checkSignature();
+  // Clear data in a specific slot.
+  void clear(int slotindex);
 
-  /**
-   * @brief Clears the entire EEPROM memory.
-   */
-  void clearMemory();
+  // Clear a specific area in the ROM given by start and length parameters.
+  void clear(int start, int length);
 
-  /**
-   * @brief Clears a portion of the EEPROM memory.
-   *
-   * @param start Starting address to clear.
-   * @param length Length of the memory to clear.
-   */
-  void clearMemory(int start, int length);
-
-  /**
-   * @brief Prints the contents of the EEPROM memory within the specified range.
-   *
-   * @param start Starting address for printing.
-   * @param end Ending address for printing.
-   */
-  void print(int start, int end);
-
-  /**
-   * @brief Gets the length of the ROM slot at the specified index.
-   *
-   * @param slotindex Index of the ROM slot.
-   * @return Length of the ROM slot.
-   */
-  int getSlotLength(int slotindex);
-
-  /**
-   * @brief Gets the length of the ROM slot index array.
-   *
-   * @param slotindex Index of the ROM slot.
-   * @return Length of the ROM slot index array.
-   */
-  int getSlotLenIndex(int slotindex);
-
-  /**
-   * @brief Gets the starting index of the ROM slot at the specified index.
-   *
-   * @param slotindex Index of the ROM slot.
-   * @return Starting index of the ROM slot.
-   */
-  int getSlotStartIndex(int slotindex);
-
-  /**
-   * @brief Reads values from EEPROM to a byte array at the specified slot index.
-   *
-   * @param data Byte array to store the read values.
-   * @param slotindex Index of the ROM slot.
-   * @return True if read successful, false otherwise.
-   */
-  bool readValues(byte data[], int slotindex);
-
-  /**
-   * @brief Reads values from EEPROM to a String at the specified slot index.
-   *
-   * @param slotindex Index of the ROM slot.
-   * @return String containing the read values.
-   */
-  String readValues(int slotindex);
-
-  /**
-   * @brief Checks if the specified ROM slot is empty.
-   *
-   * @param slotindex Index of the ROM slot.
-   * @return True if the ROM slot is empty, false otherwise.
-   */
+  // Check if a specific slot is empty.
   bool isEmpty(int slotindex);
 
+  // Read data from a specific slot as a String.
+  String read(int slotindex);
+
+  // Read data from a specific slot into a provided byte array.
+  // WARNING: Ensure that the length of the provided array equals the slot length.
+  bool read(byte data[], int slotindex);
+
+  // Print data in a specified range (start to end) of the ROM.
+  void print(int start, int end);
+
+  // Print data from a specific slot as a string.
+  void print(int slotindex);
+
+  // Check for the presence of a predefined signature in the ROM.
+  bool checkSignature();
+
 private:
-  const int lib_signature_len = 4;
-  int lib_signature[4] = {93, 10, 29, 0};
+  const int lib_signature_len = 4;        // Length of the library signature.
+  int lib_signature[4] = {93, 10, 29, 0}; // Predefined library signature.
+
+  // Get the index in EEPROM where the length of a slot is stored.
+  int getSlotLenIndex(int slotindex);
+
+  // Get the starting index in EEPROM of a particular slot.
+  int getSlotStartIndex(int slotindex);
+
+  // Copy constructor helper to set data length and EEPROM size.
+  void copy(int dataLen, int eepromSize);
 };
 
 #endif

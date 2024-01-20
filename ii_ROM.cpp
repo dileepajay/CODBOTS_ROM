@@ -2,12 +2,6 @@
 
 ii_ROM::ii_ROM() {}
 
-/**
- * @brief Initializes the ii_ROM object.
- *
- * @param dataLen Size of datasets.
- * @param eepromSize ROM memory size in bytes.
- */
 void ii_ROM::begin(int dataLen, int eepromSize)
 {
   _eepromSize = eepromSize;
@@ -17,32 +11,22 @@ void ii_ROM::begin(int dataLen, int eepromSize)
   // Check if the ROM signature matches, clear memory if not.
   if (!checkSignature())
   {
-    clearMemory();
+    clear();
   }
 }
 
-/**
- * @brief Copies ROM settings.
- *
- * @param dataLen Size of datasets.
- * @param eepromSize ROM memory size in bytes.
- */
 void ii_ROM::copy(int dataLen, int eepromSize)
 {
   _eepromSize = eepromSize;
   _dataLen = dataLen;
 
-  // Check if the ROM signature matches, clear memory if not.
   if (!checkSignature())
   {
-    clearMemory();
+    clear();
   }
 }
 
-/**
- * @brief Clears the entire ROM memory.
- */
-void ii_ROM::clearMemory()
+void ii_ROM::clear()
 {
   // Write the library signature to the first 4 bytes.
   for (int n = 0; n < 4; n++)
@@ -62,13 +46,7 @@ void ii_ROM::clearMemory()
   EEPROM.commit();
 }
 
-/**
- * @brief Clears a specified portion of the ROM memory.
- *
- * @param start Starting address.
- * @param length Length of the memory to clear.
- */
-void ii_ROM::clearMemory(int start, int length)
+void ii_ROM::clear(int start, int length)
 {
   for (int n = start; n < start + length; n++)
   {
@@ -77,12 +55,6 @@ void ii_ROM::clearMemory(int start, int length)
   EEPROM.commit();
 }
 
-/**
- * @brief Prints values from a specified range in the ROM memory to Serial.
- *
- * @param start Starting address.
- * @param end Ending address.
- */
 void ii_ROM::print(int start, int end)
 {
   for (int n = start; n < end; n++)
@@ -91,11 +63,11 @@ void ii_ROM::print(int start, int end)
   }
 }
 
-/**
- * @brief Checks if the ROM signature matches.
- *
- * @return true if the signature matches, false otherwise.
- */
+void ii_ROM::print(int slotindex)
+{
+  Serial.println(read(slotindex));
+}
+
 bool ii_ROM::checkSignature()
 {
   lib_signature[3] = _dataLen;
@@ -112,12 +84,6 @@ bool ii_ROM::checkSignature()
   return true;
 }
 
-/**
- * @brief Creates a slot in the ROM memory with specified length.
- *
- * @param slotindex Index of the slot.
- * @param length Length of the slot.
- */
 void ii_ROM::createSlot(int slotindex, int length)
 {
   if (length > 255)
@@ -132,52 +98,29 @@ void ii_ROM::createSlot(int slotindex, int length)
   }
 
   // Update the slot length in the ROM memory.
-  if (getSlotLength(slotindex) != (byte)length)
+  if (getLength(slotindex) != (byte)length)
   {
     EEPROM.write(getSlotLenIndex(slotindex), (byte)length);
-    clearMemory(getSlotStartIndex(slotindex), length);
+    clear(getSlotStartIndex(slotindex), length);
     EEPROM.commit();
   }
 }
 
-/**
- * @brief Clears the content of a specified slot.
- *
- * @param slotindex Index of the slot.
- */
-void ii_ROM::clearSlot(int slotindex)
+void ii_ROM::clear(int slotindex)
 {
-  clearMemory(getSlotStartIndex(slotindex), getSlotLength(slotindex));
+  clear(getSlotStartIndex(slotindex), getLength(slotindex));
 }
 
-/**
- * @brief Gets the index in the EEPROM where the length of a slot is stored.
- *
- * @param slotindex Index of the slot.
- * @return Index in EEPROM.
- */
 int ii_ROM::getSlotLenIndex(int slotindex)
 {
   return lib_signature_len + slotindex;
 }
 
-/**
- * @brief Gets the length of a specified slot.
- *
- * @param slotindex Index of the slot.
- * @return Length of the slot.
- */
-int ii_ROM::getSlotLength(int slotindex)
+int ii_ROM::getLength(int slotindex)
 {
   return EEPROM.read(getSlotLenIndex(slotindex));
 }
 
-/**
- * @brief Gets the starting index in EEPROM where a slot begins.
- *
- * @param slotindex Index of the slot.
- * @return Starting index in EEPROM.
- */
 int ii_ROM::getSlotStartIndex(int slotindex)
 {
   int total = lib_signature_len + _dataLen;
@@ -188,16 +131,10 @@ int ii_ROM::getSlotStartIndex(int slotindex)
   return total;
 }
 
-/**
- * @brief Writes a String to a specified slot in the ROM memory.
- *
- * @param data String to write.
- * @param slotindex Index of the slot.
- */
-void ii_ROM::writeSlot(String data, int slotindex)
+void ii_ROM::write(String data, int slotindex)
 {
   int startindex = getSlotStartIndex(slotindex);
-  for (int i = 0; i < getSlotLength(slotindex); i++)
+  for (int i = 0; i < getLength(slotindex); i++)
   {
     if (i < data.length())
     {
@@ -211,20 +148,13 @@ void ii_ROM::writeSlot(String data, int slotindex)
   EEPROM.commit();
 }
 
-/**
- * @brief Writes an array of bytes to a specified slot in the ROM memory.
- *
- * @param data Array of bytes to write.
- * @param slotindex Index of the slot.
- */
-void ii_ROM::writeSlot(byte data[], int slotindex)
+void ii_ROM::write(byte data[], int datalength, int slotindex)
 {
-  int elementCount = 17;
 
   int startindex = getSlotStartIndex(slotindex);
-  for (int i = 0; i < getSlotLength(slotindex); i++)
+  for (int i = 0; i < getLength(slotindex); i++)
   {
-    if (i < elementCount)
+    if (i < datalength)
     {
       EEPROM.write(startindex + i, data[i]);
     }
@@ -236,17 +166,11 @@ void ii_ROM::writeSlot(byte data[], int slotindex)
   EEPROM.commit();
 }
 
-/**
- * @brief Reads values from a specified slot in the ROM memory into an array of bytes.
- *
- * @param data Array to store the values.
- * @param slotindex Index of the slot.
- * @return true if values are available, false otherwise.
- */
-bool ii_ROM::readValues(byte data[], int slotindex)
+bool ii_ROM::read(byte data[], int slotindex)
 {
   int startAddress = getSlotStartIndex(slotindex);
-  int endAddress = startAddress + getSlotLength(slotindex);
+  int endAddress = startAddress + getLength(slotindex);
+
   bool available = false;
   for (int i = startAddress; i < endAddress; i++)
   {
@@ -259,16 +183,10 @@ bool ii_ROM::readValues(byte data[], int slotindex)
   return available;
 }
 
-/**
- * @brief Reads values from a specified slot in the ROM memory as a String.
- *
- * @param slotindex Index of the slot.
- * @return String containing the values.
- */
-String ii_ROM::readValues(int slotindex)
+String ii_ROM::read(int slotindex)
 {
   int startAddress = getSlotStartIndex(slotindex);
-  int endAddress = startAddress + getSlotLength(slotindex);
+  int endAddress = startAddress + getLength(slotindex);
   String data = "";
 
   for (int i = startAddress; i <= endAddress; i++)
@@ -286,14 +204,8 @@ String ii_ROM::readValues(int slotindex)
   return data;
 }
 
-/**
- * @brief Checks if a specified slot in the ROM memory is empty.
- *
- * @param slotindex Index of the slot.
- * @return true if the slot is empty, false otherwise.
- */
 bool ii_ROM::isEmpty(int slotindex)
 {
-  byte datset[getSlotLength(slotindex)];
-  return readValues(datset, slotindex);
+  byte datset[getLength(slotindex)];
+  return !read(datset, slotindex);
 }
