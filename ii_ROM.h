@@ -5,6 +5,11 @@
 #include <EEPROM.h>
 #include <ROMSLOT.h>
 
+#define SIZE_INT 2
+#define SIZE_LONG 4
+#define SIZE_FLOAT 4
+#define SIZE_DOUBLE 4
+
 class ii_ROM
 {
 public:
@@ -23,7 +28,11 @@ public:
   // Get the length of data stored in a specific slot.
   int getLength(int slotindex);
 
-  // Write a String to a specific slot.
+  // Write any data types to a specific slot.
+  void write(int data, int slotindex);
+  void write(long data, int slotindex);
+  void write(float data, int slotindex);
+  void write(double data, int slotindex);
   void write(String data, int slotindex);
 
   // Write a byte array to a specific slot.
@@ -43,6 +52,10 @@ public:
   bool isEmpty(int slotindex);
 
   // Read data from a specific slot as a String.
+  int readInt(int slotindex);
+  long readLong(int slotindex);
+  float readFloat(int slotindex);
+  double readDouble(int slotindex);
   String read(int slotindex);
 
   // Read data from a specific slot into a provided byte array.

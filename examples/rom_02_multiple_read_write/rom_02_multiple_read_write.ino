@@ -4,6 +4,7 @@ ii_ROM rom; // Create an instance of the ii_ROM class.
 
 void setup()
 {
+  Serial.begin(115200);
   rom.begin(10, 4096); // Initialize ROM with data length and EEPROM size.
 
   // Create multiple slots in the ROM for storing different data sets.

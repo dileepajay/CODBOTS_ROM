@@ -148,6 +148,34 @@ void ii_ROM::write(String data, int slotindex)
   EEPROM.commit();
 }
 
+void ii_ROM::write(int data, int slotindex)
+{
+  int startindex = getSlotStartIndex(slotindex);
+  EEPROM.put(startindex, data);
+  EEPROM.commit();
+}
+
+void ii_ROM::write(long data, int slotindex)
+{
+  int startindex = getSlotStartIndex(slotindex);
+  EEPROM.put(startindex, data);
+  EEPROM.commit();
+}
+
+void ii_ROM::write(float data, int slotindex)
+{
+  int startindex = getSlotStartIndex(slotindex);
+  EEPROM.put(startindex, data);
+  EEPROM.commit();
+}
+
+void ii_ROM::write(double data, int slotindex)
+{
+  int startindex = getSlotStartIndex(slotindex);
+  EEPROM.put(startindex, data);
+  EEPROM.commit();
+}
+
 void ii_ROM::write(byte data[], int datalength, int slotindex)
 {
 
@@ -202,6 +230,38 @@ String ii_ROM::read(int slotindex)
     }
   }
   return data;
+}
+
+int ii_ROM::readInt(int slotindex)
+{
+  int startAddress = getSlotStartIndex(slotindex);
+  int value;
+  EEPROM.get(startAddress, value);
+  return value;
+}
+
+long ii_ROM::readLong(int slotindex)
+{
+  int startAddress = getSlotStartIndex(slotindex);
+  long value;
+  EEPROM.get(startAddress, value);
+  return value;
+}
+
+float ii_ROM::readFloat(int slotindex)
+{
+  int startAddress = getSlotStartIndex(slotindex);
+  float value;
+  EEPROM.get(startAddress, value);
+  return value;
+}
+
+double ii_ROM::readDouble(int slotindex)
+{
+  int startAddress = getSlotStartIndex(slotindex);
+  double value;
+  EEPROM.get(startAddress, value);
+  return value;
 }
 
 bool ii_ROM::isEmpty(int slotindex)
