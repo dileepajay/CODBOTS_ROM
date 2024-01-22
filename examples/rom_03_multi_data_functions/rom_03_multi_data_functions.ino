@@ -8,7 +8,7 @@ void setup()
   rom.begin(20, 4096); // Initialize ROM with larger data length and EEPROM size.
 
   // Create a slot for storing byte array.
-  rom.createSlot(0, 10); // Slot 0 with length 10
+  rom.create(0, 10); // Slot 0 with length 10
 
   // Example byte array data.
   byte byteArray[10] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};

@@ -18,9 +18,9 @@ void setup() {
   rom.begin(10, 4096); // Initialize the ROM with 10 data slots and 4096 bytes of EEPROM.
 
   // Create slots for storing WiFi SSID, password, and a data set.
-  rom.createSlot(ROM_WIFI_SSID, 16); // Slot for WiFi SSID with a length of 16 bytes.
-  rom.createSlot(ROM_WIFI_PASSWORD, 16); // Slot for WiFi password with a length of 16 bytes.
-  rom.createSlot(ROM_DATASET, 17); // Slot for a data set with a length of 17 bytes.
+  rom.create(ROM_WIFI_SSID, 16); // Slot for WiFi SSID with a length of 16 bytes.
+  rom.create(ROM_WIFI_PASSWORD, 16); // Slot for WiFi password with a length of 16 bytes.
+  rom.create(ROM_DATASET, 17); // Slot for a data set with a length of 17 bytes.
 
   // Write default values to SSID and password slots if they are empty.
   if (rom.isEmpty(ROM_WIFI_SSID)) {

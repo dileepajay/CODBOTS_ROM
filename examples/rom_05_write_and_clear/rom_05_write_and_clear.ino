@@ -11,8 +11,8 @@ void setup() {
   rom.begin(20, 4096); // Initialize ROM with 20 data slots and 4096 bytes of EEPROM.
 
   // Create slots for user and system data
-  rom.createSlot(ROM_USER_DATA, 20); // Slot for user data with a length of 20 bytes
-  rom.createSlot(ROM_SYSTEM_DATA, 30); // Slot for system data with a length of 30 bytes
+  rom.create(ROM_USER_DATA, 20); // Slot for user data with a length of 20 bytes
+  rom.create(ROM_SYSTEM_DATA, 30); // Slot for system data with a length of 30 bytes
 
   // Write data to the slots only if they are empty
   if (rom.isEmpty(ROM_USER_DATA)) {

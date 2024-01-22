@@ -11,7 +11,7 @@ void setup()
 
   // Create a slot in ROM to store data.
   // Slot index is set to 0 and the length of data to be stored is defined.
-  rom.createSlot(0, 10);
+  rom.create(0, 10);
 
   // Writing data to the slot.
   // Here, we're writing a simple string to slot 0.

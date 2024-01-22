@@ -8,8 +8,8 @@ void setup()
   rom.begin(10, 4096); // Initialize ROM with data length and EEPROM size.
 
   // Create multiple slots in the ROM for storing different data sets.
-  rom.createSlot(0, 10); // Slot 0 with length 10
-  rom.createSlot(1, 15); // Slot 1 with length 15
+  rom.create(0, 10); // Slot 0 with length 10
+  rom.create(1, 15); // Slot 1 with length 15
 
   // Writing different data to the slots.
   rom.write("Data for slot 0", 0);           // Writing to slot 0

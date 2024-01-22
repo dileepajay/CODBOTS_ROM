@@ -84,7 +84,7 @@ bool ii_ROM::checkSignature()
   return true;
 }
 
-void ii_ROM::createSlot(int slotindex, int length)
+void ii_ROM::create(int slotindex, int length)
 {
   if (length > 255)
   {

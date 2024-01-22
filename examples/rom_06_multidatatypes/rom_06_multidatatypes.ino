@@ -10,11 +10,11 @@ void setup() {
 
   // Create slots in the ROM for different data types.
   // The SIZE_* constants should be defined according to the size of each data type.
-  rom.createSlot(0, SIZE_INT);     // Slot for an integer value
-  rom.createSlot(1, SIZE_LONG);    // Slot for a long integer value
-  rom.createSlot(2, SIZE_FLOAT);   // Slot for a float value
-  rom.createSlot(3, SIZE_DOUBLE);  // Slot for a double value
-  rom.createSlot(4, 16);           // Slot for a String with a maximum length of 16 characters
+  rom.create(0, SIZE_INT);     // Slot for an integer value
+  rom.create(1, SIZE_LONG);    // Slot for a long integer value
+  rom.create(2, SIZE_FLOAT);   // Slot for a float value
+  rom.create(3, SIZE_DOUBLE);  // Slot for a double value
+  rom.create(4, 16);           // Slot for a String with a maximum length of 16 characters
 
   // Define and initialize variables with sample data.
   int a = 26374;           // Sample integer

@@ -23,7 +23,7 @@ public:
   void begin(int dataLen, int eepromSize);
 
   // Create a specific data slot with an identity index (e.g., 0, 1, 2, ...) and its expected data length.
-  void createSlot(int slotindex, int length);
+  void create(int slotindex, int length);
 
   // Get the length of data stored in a specific slot.
   int getLength(int slotindex);

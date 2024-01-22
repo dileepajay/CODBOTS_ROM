@@ -9,8 +9,8 @@ The `ii_ROM` library organizes the EEPROM memory in a structured manner for effi
 ```cpp
 //example
   rom.begin(2, 4096); // Initialize with 2 slots and 4096 bytes of EEPROM.
-  rom.createSlot(0, 16); // Create a slot at index 0 with length 16 bytes.
-  rom.createSlot(1, 20); // Create a slot at index 1 with length 20 bytes.
+  rom.create(0, 16); // Create a slot at index 0 with length 16 bytes.
+  rom.create(1, 20); // Create a slot at index 1 with length 20 bytes.
 ```
    ![Example GIF](examples/ii_ROM_memory_snap.jpg)
 
@@ -41,39 +41,39 @@ The `ii_ROM` library organizes the EEPROM memory in a structured manner for effi
 
 ```cpp
 // Create a slot for an integer
-rom.createSlot(slotIndex, sizeof(int));
+rom.create(slotIndex0, sizeof(int));
 
 // Create a slot for a float
-rom.createSlot(slotIndex, sizeof(float));
+rom.create(slotIndex1, sizeof(float));
 
 // Create a slot for a string (up to 20 characters)
-rom.createSlot(slotIndex, 20);
+rom.create(slotIndex2, 20);
 ```
 
 #### Writing Data
 
 ```cpp
 // Write an integer
-rom.write(12345, slotIndex); 
+rom.write(12345, slotIndex0); 
 
 // Write a float
-rom.write(123.45f, slotIndex); 
+rom.write(123.45f, slotIndex1); 
 
 // Write a string
-rom.write("Hello, EEPROM", slotIndex); 
+rom.write("Hello, EEPROM", slotIndex2); 
 ```
 
 #### Reading Data
 
 ```cpp
 // Read an integer
-int intValue = rom.readInt(slotIndex);
+int intValue = rom.readInt(slotIndex0);
 
 // Read a float
-float floatValue = rom.readFloat(slotIndex);
+float floatValue = rom.readFloat(slotIndex1);
 
 // Read a string
-String stringValue = rom.read(slotIndex);
+String stringValue = rom.read(slotIndex2);
 ```
 
  
@@ -128,7 +128,7 @@ Below is a list of the example sketches available for the `ii_ROM` library. Clic
 
     // Create a slot in ROM to store data.
     // Slot index is set to 0 and the length of data to be stored is defined.
-    rom.createSlot(0, 10);
+    rom.create(0, 10);
 
     // Writing data to the slot.
     // Here, we're writing a simple string to slot 0.
